@@ -1,26 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { FC, useState } from "react";
+import { Container, Heading, VStack, Box, useToast } from "@chakra-ui/react";
+import Display from "./components/Display";
+import Form from "./components/Form";
+import { generatePassword, getPasswordStrength } from "./utils";
 
-function App() {
+const App: FC = () => {
+  const [password, setPassword] = useState("#P4$$w0rd!");
+  const toast = useToast({
+    status: "error",
+    position: "bottom-right",
+    isClosable: true,
+  });
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container display="grid" maxW="full" h="100vh" bg="gray.900">
+      <Box
+        w={["full", "full", "container.sm"]}
+        justifySelf="center"
+        alignSelf="center"
+        overflow="hidden"
+      >
+        <VStack gap="8">
+          <Heading as="h1" textAlign="center" fontSize="1.5rem">
+            Password Generator
+          </Heading>
+          <Display text={password} copyIcon />
+          <Form
+            strength={getPasswordStrength(password)}
+            onSubmit={(state) => {
+              try {
+                setPassword(
+                  generatePassword(
+                    state.useUpperCase,
+                    state.useLowerCase,
+                    state.useNumeric,
+                    state.useSymbols,
+                    state.charactersLength
+                  )
+                );
+              } catch (error: any) {
+                toast({ title: error.message });
+              }
+            }}
+          />
+        </VStack>
+      </Box>
+    </Container>
   );
-}
+};
 
 export default App;
