@@ -2,6 +2,7 @@ import { FC, useState } from "react";
 import { Container, Heading, VStack, Box, useToast } from "@chakra-ui/react";
 import Display from "./components/Display";
 import Form from "./components/Form";
+import ReactGA from "react-ga4";
 import { generatePassword, getPasswordStrength } from "./utils";
 
 const App: FC = () => {
@@ -38,6 +39,12 @@ const App: FC = () => {
                     state.charactersLength
                   )
                 );
+
+                ReactGA.event({
+                  category: "form_submit",
+                  label: "Generate Passowrd",
+                  action: "generate_password",
+                });
               } catch (error: any) {
                 toast({ title: error.message });
               }
